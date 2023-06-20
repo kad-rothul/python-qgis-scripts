@@ -1,0 +1,4 @@
+.venv
+.vscode
+symbology-style.db
+user-history.db
