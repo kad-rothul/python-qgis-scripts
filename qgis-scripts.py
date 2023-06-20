@@ -7,14 +7,20 @@
  *                                                                         *
  ***************************************************************************/
 """
+# Executing this file from the python console in QGIS works using:
+# exec(open(r"path-to-repo/python-qgis-scripts/qgis-scripts.py".encode('utf-8')).read())
 
+import os
 from qgis.core import (
     QgsProject, 
     QgsRasterLayer,
-    QgsVectorLayer
+    QgsVectorLayer,
+    QgsApplication,
 )
 import urllib.request, urllib.parse, urllib.error
 
+# Supply path to qgis install location
+QgsApplication.setPrefixPath(os.environ.get('QGIS_HOME_PATH'), True)
 
 def quote_wmts_url(url):
     """
@@ -108,14 +114,18 @@ def create_layers():
     return layers
 
 def add_layers_to_qgis(layers):
-    project_root = QgsProject.instance().layerTreeRoot()
+    project = QgsProject.instance()
+    project_root = project.layerTreeRoot()
     for group in [child for child in project_root.children() if child.nodeType() == 0]:
+        print(group.name())
         if group.name() == "python_layers":
             project_root.removeChildNode(group)
     project_root.addGroup("python_layers")
     output_group = project_root.findGroup("python_layers")
     for layer in layers:
+        print(layer)
         output_group.addLayer(layer) 
+    
     return None 
 
 #
