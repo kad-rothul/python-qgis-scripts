@@ -8,7 +8,11 @@
  ***************************************************************************/
 """
 
-from qgis.core import QgsProject, QgsRasterLayer
+from qgis.core import (
+    QgsProject, 
+    QgsRasterLayer,
+    QgsVectorLayer
+)
 import urllib.request, urllib.parse, urllib.error
 
 
@@ -50,6 +54,17 @@ def load_wmts(
 
     return layer
 
+# Functie die een WMTS laag returned
+def load_wfs(
+    url,
+    title="",
+    layername="",
+):
+    uri = f" pagingEnabled='true' restrictToRequestBBOX='1' srsname='EPSG:28992' typename='{layername}' url='{url}' version='auto'" #EPSG:3857
+    layer = QgsVectorLayer(uri, f"{title} (WFS)", "wfs")
+
+    return layer
+
 
 def create_layers():
     layers = []
@@ -59,6 +74,12 @@ def create_layers():
         "Provinciegebied",
     )
     layers.append(new_wms)
+    new_wfs = load_wfs(
+        "https://service.pdok.nl/kadaster/bestuurlijkegebieden/wfs/v1_0",
+        "Provinciegebied",
+        "bestuurlijkegebieden:Provinciegebied"
+    )
+    layers.append(new_wfs)
     new_wmts = load_wmts(
         "https://service.pdok.nl/brt/achtergrondkaart/wmts/v2_0?request=getcapabilities&service=wmts",
         "EPSG:28992",
