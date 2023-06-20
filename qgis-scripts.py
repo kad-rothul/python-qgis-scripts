@@ -54,7 +54,7 @@ def load_wmts(
 
     return layer
 
-# Functie die een WMTS laag returned
+# Functie die een WFS laag returned
 def load_wfs(
     url,
     title="",
@@ -62,6 +62,18 @@ def load_wfs(
 ):
     uri = f" pagingEnabled='true' restrictToRequestBBOX='1' srsname='EPSG:28992' typename='{layername}' url='{url}' version='auto'" #EPSG:3857
     layer = QgsVectorLayer(uri, f"{title} (WFS)", "wfs")
+
+    return layer
+
+# Functie die een OAPIF laag returned
+def load_oapif(
+    url,
+    title="",
+    layername="",
+):
+    uri = f"typename='{layername}' url='{url}'"
+    # uri = f" pagingEnabled='true' restrictToRequestBBOX='1' srsname='EPSG:28992' typename='{layername}' url='{url}' version='auto'"
+    layer = QgsVectorLayer(uri, f"{title} (OAPIF)", "OAPIF")
 
     return layer
 
@@ -74,6 +86,12 @@ def create_layers():
         "Provinciegebied",
     )
     layers.append(new_wms)
+    new_oapif = load_oapif(
+        "https://test.haleconnect.de/ogcapi/datasets/simplified-addresses/",
+        "SimpleAddress",
+        "SimpleAddress"
+    )
+    layers.append(new_oapif)
     new_wfs = load_wfs(
         "https://service.pdok.nl/kadaster/bestuurlijkegebieden/wfs/v1_0",
         "Provinciegebied",
