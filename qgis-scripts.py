@@ -83,6 +83,17 @@ def load_oapif(
 
     return layer
 
+# Functie die een OAPIF laag returned gebasseerd op een bounding box
+def load_oapif_bbox(
+    url,
+    title="",
+    layername="",
+):
+    uri = f"{url}|layername={layername}"
+    layer = QgsVectorLayer(uri, f"{title} (OGR)", "ogr")
+
+    return layer
+
 
 def create_layers():
     layers = []
@@ -97,7 +108,13 @@ def create_layers():
         "SimpleAddress",
         "SimpleAddress"
     )
+    new_oapif2 = load_oapif_bbox(
+        "https://geoe3platform.eu/geoe3/buildings/collections/buildings_NL/items?bbox=5.958425,52.179011,5.961907,52.181024&f=json",
+        "buildings_NL_deBrug",
+        "OGRGeoJSON"
+    )
     layers.append(new_oapif)
+    layers.append(new_oapif2)
     new_wfs = load_wfs(
         "https://service.pdok.nl/kadaster/bestuurlijkegebieden/wfs/v1_0",
         "Provinciegebied",
